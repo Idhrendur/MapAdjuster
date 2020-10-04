@@ -1,0 +1,9 @@
+[submodule "imageMagick"]
+	path = imageMagick
+	url = https://github.com/ParadoxGameConverters/imageMagick.git
+[submodule "commonItems"]
+	path = commonItems
+	url = https://github.com/ParadoxGameConverters/commonItems.git
+[submodule "wxWidgets"]
+	path = wxWidgets
+	url = https://github.com/ParadoxGameConverters/wxWidgets.git
