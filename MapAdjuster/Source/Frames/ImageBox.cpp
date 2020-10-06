@@ -1,10 +1,12 @@
 #include "ImageBox.h"
-
+#include "PointWindow.h"
 #include "Log.h"
 #include "wx/image.h"
 #include "../PointMapper/CoPoint.h"
 
 wxDEFINE_EVENT(wxEVT_POINT_PLACED, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_DESELECT_POINT, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_DELETE_WORKING_POINT, wxCommandEvent);
 
 ImageBox::ImageBox(wxWindow* parent, const wxImage& theImage, ImageTabSelector theSelector): wxWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
@@ -16,6 +18,8 @@ ImageBox::ImageBox(wxWindow* parent, const wxImage& theImage, ImageTabSelector t
 	Bind(wxEVT_PAINT, &ImageBox::paintEvent, this);
 	Bind(wxEVT_SIZE, &ImageBox::onSize, this);
 	Bind(wxEVT_RIGHT_UP, &ImageBox::rightUp, this);
+	Bind(wxEVT_LEFT_UP, &ImageBox::leftUp, this);
+	Bind(wxEVT_KEY_DOWN, &ImageBox::onKeyDown, this);
 
 	image = theImage;
 	dc = new wxClientDC(this); // Device Context, a drawable area.
@@ -23,13 +27,13 @@ ImageBox::ImageBox(wxWindow* parent, const wxImage& theImage, ImageTabSelector t
 
 void ImageBox::paintEvent(wxPaintEvent& evt)
 {
-	render(dc);
+	render();
 }
 void ImageBox::paintNow()
 {
-	render(dc);
+	render();
 }
-void ImageBox::render(wxDC* dc)
+void ImageBox::render()
 {
 	dc->DrawBitmap(image, 0, 0, false);
 	SetMinSize(image.GetSize());
@@ -83,9 +87,51 @@ void ImageBox::updatePoint(wxCommandEvent& event)
 					break;
 				}
 		}
+		else if (pointData->getDrop())
+		{
+			auto point = knownPoints.begin();
+			while (point != knownPoints.end())
+			{
+				if (*point == pointData->getPoint())
+				{
+					knownPoints.erase(point);
+					break;
+				}
+				++point;
+			}
+		}
 		else
 		{
 			knownPoints.emplace_back(updatedPoint);
 		}
+	}
+}
+
+void ImageBox::leftUp(wxMouseEvent& event)
+{
+	// Left up means deselect working point if any.
+	wxCommandEvent evt(wxEVT_DESELECT_POINT);
+	eventListener->QueueEvent(evt.Clone());
+}
+
+void ImageBox::onKeyDown(wxKeyEvent& event)
+{
+	wxCommandEvent evt(wxEVT_CHANGE_TAB);
+	switch (event.GetKeyCode())
+	{
+		case WXK_F1:
+			evt.SetInt(1);
+			eventListener->QueueEvent(evt.Clone());
+			break;
+		case WXK_F2:
+			evt.SetInt(2);
+			eventListener->QueueEvent(evt.Clone());
+			break;
+		case WXK_DELETE:
+		case WXK_NUMPAD_DELETE:
+			evt.SetEventType(wxEVT_DELETE_WORKING_POINT);
+			eventListener->QueueEvent(evt.Clone());
+		default:
+			event.Skip();
 	}
 }

@@ -53,3 +53,16 @@ bool CoPoint::operator==(const CoPoint& lhs) const
 		return false;
 	return true;
 }
+
+std::ostream& operator<<(std::ostream& output, const CoPoint& coPoint)
+{
+	output << "link = { ";
+	if (!coPoint.name.empty())
+		output << "name = \"" << coPoint.name << "\" ";
+	if (coPoint.getSource())
+		output << "source = { " << coPoint.source->x << " " << coPoint.source->y << "} ";
+	if (coPoint.getTarget())
+		output << "target = { " << coPoint.target->x << " " << coPoint.target->y << "} ";
+	output << "}\n";
+	return output;
+}

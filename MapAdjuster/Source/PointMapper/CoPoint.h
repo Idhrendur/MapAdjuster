@@ -19,13 +19,14 @@ class CoPoint: commonItems::parser
 	[[nodiscard]] const auto& getSource() const { return source; }
 	[[nodiscard]] const auto& getTarget() const { return target; }
 
+	friend std::ostream& operator<<(std::ostream& output, const CoPoint& agreement);
+
   private:
 	void registerKeys();
 
 	std::string name;
 	std::optional<Point> source;
 	std::optional<Point> target;
-
 };
-
+std::ostream& operator<<(std::ostream& output, const CoPoint& agreement);
 #endif // CO_POINT_H

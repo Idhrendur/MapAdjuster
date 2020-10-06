@@ -6,6 +6,8 @@
 #include "PointData.h"
 
 wxDECLARE_EVENT(wxEVT_POINT_PLACED, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_DESELECT_POINT, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_DELETE_WORKING_POINT, wxCommandEvent);
 
 class ImageBox: public wxWindow
 {
@@ -18,13 +20,15 @@ class ImageBox: public wxWindow
   private:
 	void paintEvent(wxPaintEvent& evt);
 	void onSize(wxSizeEvent& event);
-	void render(wxDC* dc);
+	void render();
 	void rightUp(wxMouseEvent& event);
+	void leftUp(wxMouseEvent& event);
 
 	wxClientDC* dc = nullptr;
 	wxImage image;
 	ImageTabSelector selector;
 	std::vector<Point> knownPoints;
+	void onKeyDown(wxKeyEvent& event);
 
   protected:
 	wxEvtHandler* eventListener = nullptr;

@@ -9,7 +9,9 @@ class PointMapper: commonItems::parser
   public:
 	PointMapper();
 	explicit PointMapper(std::istream& theStream);
-	
+
+	void exportPoints() const;
+	void exportAdjustedMap() const;
 	[[nodiscard]] const auto& getCoPoints() const { return coPoints; }
 
   private:

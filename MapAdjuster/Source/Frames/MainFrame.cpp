@@ -8,12 +8,17 @@ MainFrame::MainFrame(const wxString& title, const wxPoint& pos, const wxSize& si
 	// MainFrame is what holds the entire application together, visually and logically.
 	// It receives events from both the visual side (imageTabs and pointWindow), and the logical/file side (pointMapper),
 	// and dispatches in response.
-	
+
+	Bind(wxEVT_CHANGE_TAB, &MainFrame::onChangeTab, this);
 	Bind(wxEVT_UPDATE_POINT, &MainFrame::onUpdatePoint, this);
 	Bind(wxEVT_POINT_PLACED, &MainFrame::onPointPlaced, this);
+	Bind(wxEVT_DESELECT_POINT, &MainFrame::onDeselectWorkingPoint, this);
+	Bind(wxEVT_DELETE_WORKING_POINT, &MainFrame::onDeleteWorkingPoint, this);
 	Bind(wxEVT_MENU, &MainFrame::onExit, this, wxID_EXIT);
 	Bind(wxEVT_MENU, &MainFrame::onAbout, this, wxID_ABOUT);
 	Bind(wxEVT_MENU, &MainFrame::onSupportUs, this, wxID_NETWORK);
+	Bind(wxEVT_MENU, &MainFrame::onExportPoints, this, wxID_FILE1);
+	Bind(wxEVT_MENU, &MainFrame::onExportAdjustedMap, this, wxID_FILE2);
 }
 
 void MainFrame::initFrame()
@@ -61,7 +66,6 @@ void MainFrame::onPointPlaced(wxCommandEvent& event)
 	
 	auto const* pointData = static_cast<PointData*>(event.GetClientData());
 	const auto point = pointData->getPoint();
-
 	pointWindow->registerPoint(point, pointData->getSelector());	
 }
 
@@ -72,6 +76,43 @@ void MainFrame::onUpdatePoint(wxCommandEvent& event)
 
 	imageTabFrom->updatePoint(event); // One of them will figure it out.
 	imageTabTo->updatePoint(event);
+}
+
+void MainFrame::onDeselectWorkingPoint(wxCommandEvent& event)
+{
+	// This is a message to the PointWindow to get rid of working point and prep for a new one.
+
+	pointWindow->deselectWorkingPoint();
+}
+
+void MainFrame::onChangeTab(wxCommandEvent& event)
+{
+	switch (event.GetInt())
+	{
+		case 1:
+			notebook->SetSelection(0);
+			break;
+		case 2:
+			notebook->SetSelection(1);
+			break;
+		default:
+			break;
+	}
+}
+
+void MainFrame::onDeleteWorkingPoint(wxCommandEvent& event)
+{
+	pointWindow->deleteWorkingPoint();
+}
+
+void MainFrame::onExportPoints(wxCommandEvent& event)
+{
+	pointMapper.exportPoints();
+}
+
+void MainFrame::onExportAdjustedMap(wxCommandEvent& event)
+{
+	pointMapper.exportAdjustedMap();
 }
 
 void MainFrame::onExit(wxCommandEvent& event)

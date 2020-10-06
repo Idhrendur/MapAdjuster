@@ -22,6 +22,11 @@ class MainFrame: public wxFrame
 	void onSupportUs(wxCommandEvent& event);
 	void onPointPlaced(wxCommandEvent& event);
 	void onUpdatePoint(wxCommandEvent& event);
+	void onDeselectWorkingPoint(wxCommandEvent& event);
+	void onChangeTab(wxCommandEvent& event);
+	void onDeleteWorkingPoint(wxCommandEvent& event);
+	void onExportPoints(wxCommandEvent& event);
+	void onExportAdjustedMap(wxCommandEvent& event);
 
 	PointMapper pointMapper;
 	PointWindow* pointWindow = nullptr;
@@ -29,6 +34,4 @@ class MainFrame: public wxFrame
 	wxFlexGridSizer* vbox = nullptr;
 	ImageTab* imageTabFrom = nullptr;
 	ImageTab* imageTabTo = nullptr;
-	
-	void updateCoPoint(const std::shared_ptr<CoPoint>& coPoint);
 };

@@ -11,6 +11,8 @@ bool MapAdjuster::OnInit()
 	frame->SetIcon(wxIcon(wxT("converter.ico"), wxBITMAP_TYPE_ICO, 16, 16));
 
 	wxMenu* menuFile = new wxMenu;
+	menuFile->Append(wxID_FILE1, "Export Points");
+	menuFile->Append(wxID_FILE2, "Export Adjusted Map");
 	menuFile->Append(wxID_EXIT, "Exit");
 	wxMenu* menuHelp = new wxMenu;
 	menuHelp->Append(wxID_ABOUT, "About");

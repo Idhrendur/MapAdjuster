@@ -8,6 +8,7 @@
 #include "ImageBox.h"
 
 wxDECLARE_EVENT(wxEVT_UPDATE_POINT, wxCommandEvent);
+wxDECLARE_EVENT(wxEVT_CHANGE_TAB, wxCommandEvent);
 
 class PointWindow: public wxWindow
 {
@@ -16,6 +17,8 @@ class PointWindow: public wxWindow
 	void loadCoPoints(const std::shared_ptr<std::vector<std::shared_ptr<CoPoint>>>& theCoPoints) { coPoints = theCoPoints; }
 	void registerPoint(const Point& point, ImageTabSelector theSelector);
 	void redrawGrid() const;
+	void deselectWorkingPoint();
+	void deleteWorkingPoint();
 
   private:
 	wxGrid* theGrid = nullptr;
@@ -24,6 +27,9 @@ class PointWindow: public wxWindow
 
 	void createCoPoint(const Point& point, ImageTabSelector selector);
 	void updateWorkingPoint(const Point& point, ImageTabSelector selector) const;
+
+	void onKeyDown(wxKeyEvent& event);
+	void onCellSelect(wxGridEvent& event);
 
   protected:
 	wxEvtHandler* eventListener = nullptr;

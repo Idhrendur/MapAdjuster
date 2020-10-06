@@ -1,11 +1,14 @@
 #include "PointWindow.h"
 
 wxDEFINE_EVENT(wxEVT_UPDATE_POINT, wxCommandEvent);
+wxDEFINE_EVENT(wxEVT_CHANGE_TAB, wxCommandEvent);
 
 PointWindow::PointWindow(wxWindow* parent): wxWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
 	eventListener = parent;
-	
+	Bind(wxEVT_GRID_CELL_LEFT_CLICK, &PointWindow::onCellSelect, this);
+	Bind(wxEVT_KEY_DOWN, &PointWindow::onKeyDown, this);
+
 	// Pointwindow displays the points we get from PointMapper.
 	
 	theGrid = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxFULL_REPAINT_ON_RESIZE);
@@ -32,11 +35,11 @@ void PointWindow::redrawGrid() const
 {
 	auto rowCounter = 0;
 	theGrid->BeginBatch();
-	theGrid->DeleteRows(0, static_cast<int>(coPoints->size()));
-	auto bgcolor = wxColour(200, 200, 200);
+	theGrid->DeleteRows(0, theGrid->GetNumberRows());
 
 	for (const auto& coPoint: *coPoints)
 	{
+		auto bgcolor = wxColour(200, 200, 200);
 		std::string name;
 		if (coPoint->getName().empty())
 			name = "(No Name)";
@@ -134,4 +137,86 @@ void PointWindow::updateWorkingPoint(const Point& point, ImageTabSelector select
 			break;
 	}
 	eventListener->QueueEvent(evt.Clone());
+}
+
+void PointWindow::deselectWorkingPoint()
+{
+	if (workingPoint)
+	{
+		workingPoint = nullptr;
+		redrawGrid();
+	}
+}
+
+void PointWindow::onCellSelect(wxGridEvent& event)
+{
+	// We're selecting some cell. Let's translate that.
+	const auto row = event.GetRow();
+	if (row < static_cast<int>(coPoints->size()))
+	{
+		workingPoint = coPoints->at(row);
+		redrawGrid();
+		theGrid->Scroll(0, row - 1);
+	}
+}
+
+void PointWindow::deleteWorkingPoint()
+{
+	if (workingPoint)
+	{
+		auto coPoint = (*coPoints).begin();
+		while (coPoint != (*coPoints).end())
+		{
+			if (**coPoint == *workingPoint)
+			{
+				// message the maps to delete points
+				if (workingPoint->getSource())
+				{
+					wxCommandEvent evt(wxEVT_UPDATE_POINT);
+					auto pointData = new PointData(*workingPoint->getSource(), ImageTabSelector::SOURCE);
+					pointData->setDrop();
+					evt.SetClientData(pointData);
+					eventListener->QueueEvent(evt.Clone());
+				}
+				if (workingPoint->getTarget())
+				{
+					wxCommandEvent evt(wxEVT_UPDATE_POINT);
+					auto pointData = new PointData(*workingPoint->getTarget(), ImageTabSelector::TARGET);
+					pointData->setDrop();
+					evt.SetClientData(pointData);
+					eventListener->QueueEvent(evt.Clone());
+				}
+				(*coPoints).erase(coPoint);
+				break;
+			}
+			else
+			{
+				++coPoint;
+			}
+		}
+		workingPoint = nullptr;
+		redrawGrid();
+	}
+}
+
+void PointWindow::onKeyDown(wxKeyEvent& event)
+{
+	wxCommandEvent evt(wxEVT_CHANGE_TAB);
+	switch (event.GetKeyCode())
+	{
+		case WXK_F1:
+			evt.SetInt(1);
+			eventListener->QueueEvent(evt.Clone());
+			break;
+		case WXK_F2:
+			evt.SetInt(2);
+			eventListener->QueueEvent(evt.Clone());
+			break;
+		case WXK_DELETE:
+		case WXK_NUMPAD_DELETE:
+			deleteWorkingPoint();
+			break;
+		default:
+			event.Skip();
+	}
 }

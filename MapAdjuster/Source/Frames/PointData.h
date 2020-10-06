@@ -20,9 +20,12 @@ class PointData: public wxClientData
 	[[nodiscard]] const auto& getPoint() const { return point; }
 	[[nodiscard]] const auto& getReplacementPoint() const { return replacementPoint; }
 	[[nodiscard]] auto getSelector() const { return selector; }
+	[[nodiscard]] auto getDrop() const { return drop; }
+	void setDrop() { drop = true; }
 
   private:
 	Point point;
 	std::optional<Point> replacementPoint;
 	ImageTabSelector selector;
+	bool drop = false;
 };

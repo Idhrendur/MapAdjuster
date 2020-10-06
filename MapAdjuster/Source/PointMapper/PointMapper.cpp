@@ -1,6 +1,7 @@
 #include "PointMapper.h"
-#include "Log.h"
+#include "Magick++.h"
 #include "ParserHelpers.h"
+#include <fstream>
 
 PointMapper::PointMapper(std::istream& theStream)
 {
@@ -24,4 +25,32 @@ void PointMapper::registerKeys()
 		coPoints->push_back(coPoint);
 	});
 	registerRegex(commonItems::catchallRegex, commonItems::ignoreItem);
+}
+
+void PointMapper::exportPoints() const
+{
+	std::ofstream pointFile("test_mappings.txt");
+	for (const auto& coPoint: *coPoints)
+		pointFile << *coPoint;
+	pointFile.close();
+}
+
+void PointMapper::exportAdjustedMap() const
+{
+	Magick::Image sourceMap("test-from/provinces.bmp");
+	
+	std::vector<double> transformationVector;
+	for (const auto& coPoint : *coPoints)
+	{
+		if (coPoint->getSource() && coPoint->getTarget())
+		{
+			transformationVector.emplace_back(coPoint->getSource()->x);
+			transformationVector.emplace_back(coPoint->getSource()->y);
+			transformationVector.emplace_back(coPoint->getTarget()->x);
+			transformationVector.emplace_back(coPoint->getTarget()->y);
+		}
+	}
+	double* theArray = &transformationVector[0];
+	sourceMap.distort(MagickCore::ShepardsDistortion, transformationVector.size(), theArray, true);
+	sourceMap.write("transformed.bmp");
 }
