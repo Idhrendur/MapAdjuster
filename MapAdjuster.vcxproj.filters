@@ -72,6 +72,9 @@
     <ClCompile Include="MapAdjuster\Source\PointMapper\CoPoint.cpp">
       <Filter>MapAdjuster\PointMapper</Filter>
     </ClCompile>
+    <ClCompile Include="MapAdjuster\Source\PointMapper\Point.cpp">
+      <Filter>MapAdjuster\PointMapper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commonItems\ParserHelpers.h">
@@ -114,6 +117,12 @@
       <Filter>MapAdjuster\PointMapper</Filter>
     </ClInclude>
     <ClInclude Include="MapAdjuster\Source\PointMapper\CoPoint.h">
+      <Filter>MapAdjuster\PointMapper</Filter>
+    </ClInclude>
+    <ClInclude Include="MapAdjuster\Source\Frames\PointData.h">
+      <Filter>MapAdjuster\Frames</Filter>
+    </ClInclude>
+    <ClInclude Include="MapAdjuster\Source\PointMapper\Point.h">
       <Filter>MapAdjuster\PointMapper</Filter>
     </ClInclude>
   </ItemGroup>

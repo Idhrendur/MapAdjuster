@@ -6,6 +6,8 @@
 
 #include "PointWindow.h"
 #include <wx/notebook.h>
+#include "ImageTab.h"
+#include "../PointMapper/PointMapper.h"
 
 class MainFrame: public wxFrame
 {
@@ -15,12 +17,18 @@ class MainFrame: public wxFrame
 	void initFrame();
 
   private:
-	void OnExit(wxCommandEvent& event);
-	void OnAbout(wxCommandEvent& event);
-	void OnSupportUs(wxCommandEvent& event);
+	void onExit(wxCommandEvent& event);
+	void onAbout(wxCommandEvent& event);
+	void onSupportUs(wxCommandEvent& event);
+	void onPointPlaced(wxCommandEvent& event);
+	void onUpdatePoint(wxCommandEvent& event);
+
+	PointMapper pointMapper;
 	PointWindow* pointWindow = nullptr;
 	wxNotebook* notebook = nullptr;
 	wxFlexGridSizer* vbox = nullptr;
+	ImageTab* imageTabFrom = nullptr;
+	ImageTab* imageTabTo = nullptr;
 	
-	void onResize(wxSizeEvent& evt);
+	void updateCoPoint(const std::shared_ptr<CoPoint>& coPoint);
 };

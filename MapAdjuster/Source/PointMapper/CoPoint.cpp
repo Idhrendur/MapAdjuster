@@ -18,17 +18,38 @@ void CoPoint::registerKeys()
 		const auto coords = commonItems::intList(theStream).getInts();
 		if (coords.size() == 2)
 		{
-			source.x = coords[0];
-			source.y = coords[1];
+			source = Point(coords[0], coords[1]);
 		}
 	});
 	registerKeyword("target", [this](const std::string& unused, std::istream& theStream) {
 		const auto coords = commonItems::intList(theStream).getInts();
 		if (coords.size() == 2)
 		{
-			target.x = coords[0];
-			target.y = coords[1];
+			target = Point(coords[0], coords[1]);
 		}
 	});
 	registerRegex(commonItems::catchallRegex, commonItems::ignoreItem);
+}
+
+bool CoPoint::operator==(const CoPoint& lhs) const
+{
+	if (lhs.source && !source)
+		return false;
+	if (!lhs.source && source)
+		return false;
+	if (lhs.target && !target)
+		return false;
+	if (!lhs.target && target)
+		return false;
+	if (lhs.name.empty() && !name.empty())
+		return false;
+	if (!lhs.name.empty() && name.empty())
+		return false;
+	if (source && *source != *lhs.source)
+		return false;
+	if (target && *target != *lhs.target)
+		return false;
+	if (name != lhs.name)
+		return false;
+	return true;
 }

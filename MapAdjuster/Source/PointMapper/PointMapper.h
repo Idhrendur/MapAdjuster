@@ -9,13 +9,12 @@ class PointMapper: commonItems::parser
   public:
 	PointMapper();
 	explicit PointMapper(std::istream& theStream);
-
+	
 	[[nodiscard]] const auto& getCoPoints() const { return coPoints; }
 
   private:
 	void registerKeys();
-
-	std::vector<CoPoint> coPoints;
+	std::shared_ptr<std::vector<std::shared_ptr<CoPoint>>> coPoints;
 };
 
 #endif // POINT_MAPPER_H

@@ -32,6 +32,7 @@
     <ClCompile Include="MapAdjuster\Source\Frames\PointWindow.cpp" />
     <ClCompile Include="MapAdjuster\Source\Frames\MainFrame.cpp" />
     <ClCompile Include="MapAdjuster\Source\MapAdjuster.cpp" />
+    <ClCompile Include="MapAdjuster\Source\PointMapper\Point.cpp" />
     <ClCompile Include="MapAdjuster\Source\PointMapper\PointMapper.cpp" />
     <ClCompile Include="MapAdjuster\Source\PointMapper\CoPoint.cpp" />
   </ItemGroup>
@@ -45,9 +46,11 @@
     <ClInclude Include="commonItems\StringUtils.h" />
     <ClInclude Include="MapAdjuster\Source\Frames\ImageBox.h" />
     <ClInclude Include="MapAdjuster\Source\Frames\ImageTab.h" />
+    <ClInclude Include="MapAdjuster\Source\Frames\PointData.h" />
     <ClInclude Include="MapAdjuster\Source\Frames\PointWindow.h" />
     <ClInclude Include="MapAdjuster\Source\Frames\MainFrame.h" />
     <ClInclude Include="MapAdjuster\Source\MapAdjuster.h" />
+    <ClInclude Include="MapAdjuster\Source\PointMapper\Point.h" />
     <ClInclude Include="MapAdjuster\Source\PointMapper\PointMapper.h" />
     <ClInclude Include="MapAdjuster\Source\PointMapper\CoPoint.h" />
   </ItemGroup>

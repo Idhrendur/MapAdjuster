@@ -2,18 +2,18 @@
 #define CO_POINT_H
 
 #include "Parser.h"
-
-struct Point
-{
-	int x = 0;
-	int y = 0;
-};
+#include "Point.h"
 
 class CoPoint: commonItems::parser
 {
   public:
 	CoPoint() = default;
 	explicit CoPoint(std::istream& theStream);
+	bool operator==(const CoPoint& lhs) const;
+
+	void setName(const std::string& theName) { name = theName; }
+	void setSource(const Point& thePoint) { source = thePoint; }
+	void setTarget(const Point& thePoint) { target = thePoint; }
 
 	[[nodiscard]] const auto& getName() const { return name; }
 	[[nodiscard]] const auto& getSource() const { return source; }
@@ -23,8 +23,8 @@ class CoPoint: commonItems::parser
 	void registerKeys();
 
 	std::string name;
-	Point source;
-	Point target;
+	std::optional<Point> source;
+	std::optional<Point> target;
 
 };
 
